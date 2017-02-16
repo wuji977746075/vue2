@@ -1,13 +1,25 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+// 引用vue
 import Vue from 'vue'
+// 引用router
+import VueRouter from 'vue-router'
+// use router
+Vue.use(VueRouter)
+// 入口文件为 src/App.vue 文件 所以要引用
 import App from './App'
-import router from './router'
+// 引用router config
+import routes from './config/routes'
+// use router config
+const router = new VueRouter({
+  routes
+})
+// 引用API文件
+//import api from './config/api'
+//将API方法绑定到全局
+//Vue.prototype.$api = api
 
-/* eslint-disable no-new */
+// run
 new Vue({
-  el: '#app',
   router,
-  template: '<App/>',
-  components: { App }
+  el: '#app',
+  render : (h) => h(App)
 })
