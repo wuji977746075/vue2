@@ -13,9 +13,9 @@ const router = new VueRouter({
   routes
 })
 // 引用API文件
-//import api from './config/api'
-//将API方法绑定到全局
-//Vue.prototype.$api = api
+import api from './config/api'
+// 将API方法绑定到全局
+Vue.prototype.$api = api
 
 // run
 new Vue({

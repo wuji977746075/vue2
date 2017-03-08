@@ -1,7 +1,12 @@
 /*普通的css*/
 *{padding: 0;margin: 0;}
-html,body{
+html,body{/*
   background-color: #fff;
   font-size: 24px;
-  color: #af1259;
+  color: #af1259;*/
+}
+.logo {color: red;}
+.list {
+  line-height: 2;
+  li {border-bottom: 1px solid #ddd;}
 }

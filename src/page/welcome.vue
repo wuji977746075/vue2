@@ -1,24 +1,17 @@
 <template>
-<div>
-  <h1 class="logo">cnsodejs Api Test sds</h1>
-  <router-link to="welcome">welcome.html</router-link>
-  <router-link to="content">content.html</router-link>
+<div>sds
+  <h1 class="logo">welcome.html</h1>
   <ul class="list">
-    <li v-for="item in list" v-text="item.title"></li>
+    <li v-for="item in lists" v-text="item.title"></li>
   </ul>
 </div>
 </template>
 
-<style type="text/css">
-  .log{
-    color:red;
-  }
-</style>
 <script>
 export default {
   data() {
     return {
-      list:[]
+      lists:[]
     }
   },
   created () {
@@ -27,15 +20,14 @@ export default {
   },
   methods: {
     get_data: function(params) {
+      console.log('===',params)
       var v = this
       if (!params) params = {}
       // 我们这里用全局绑定的 $api 方法来获取数据，方便吧~
-      v.$api.get('topics', params, function(r) {
-        console.log(r)
-        v.list = r.data
-      })
+      // request('GET', '/search').end(function(res,rsp){
+      //   console.log('===',rsp)
+      // });
     },
   },
-
 }
 </script>
