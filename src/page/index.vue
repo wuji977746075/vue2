@@ -1,8 +1,11 @@
 <template>
 <div>
   <h1 class="logo" v-text="headerTitle"></h1>
-  <h1 v-text="menus"></h1>
   <div v-text="news"></div>
+  <h2 v-text="ac"></h2>
+  <h2 v-text="bc"></h2>
+  <input v-bind:value="message" v-on:input="changeMes" placeholder="edit me" debounce="500">
+  <p>Message is: {{ message }}</p>
   <router-link to="/welcome">welcome.html</router-link>
   <router-link to="/content">content.html</router-link>
   <ul class="list">
@@ -13,48 +16,59 @@
 
 <script>
 import { mapState } from 'vuex'
-// import {savaToLocal} from '../common/js/store';
-// import {loadFromlLocal} from '../common/js/store';
+import { savaToLocal } from '../common/js/store';
+import { loadFromlLocal } from '../common/js/store';
 export default {
-  data() { //组件数据
-    return {
+  data () {
+    return { //组件数据
       list:[],
       headerTitle: '',
       news:'',
       menus:'',
+      message:'init-message',
     }
   },
-  created () { // 组件创建完
-    // this.get_data()
+  // props: ['father_message'],
+  created () { // 组件创建
+    this.get_data()
   },
-  mounted() { // 组件加载完
+  mounted () { // 组件加载
+    this.headerTitle = this.$store.state.headerTitle
+    this.news = this.$store.state.news
+    this.menus = this.$store.state.menus
     // setTimeout(() => {
-    //localstorge
-    //   savaToLocal('index', 'title', 'title')
-    //   this.title = loadFromlLocal('index', 'title', '未找到title')
-    //store
+    // localstorge
+    // savaToLocal('index', 'title', 'title')
+    // this.title = loadFromlLocal('index', 'title', '未找到title')
     // }, 2000)
-    // this.$store.state.headerTitle = this.headerTitle
-    // this.news = this.$store.state.menus
   },
-  computed: { // 实时计算
-    ...mapState([ //对象展开运算符,store与局部计算属性混合
-      'news','headerTitle','menus'
-    ])
-    // getTitle () {
-    //   return store.state.headerTitle
-    // }
+  computed : { // 附加计算属性
+    ac : function (){ //get
+      return this.news + this.headerTitle.split('').reverse().join('')
+    },
+    bc : { //get and set
+      get : function (){
+        return this.news + ' by get';
+      },
+      set : function (){
+        this.news = this.news + ' by set';
+      }
+    }
   },
   methods: { // 组件方法
-    // get_data: function(params) {
-    //   var v = this
-    //   if (!params) params = {}
+    changeMes : function (e){ //input(立即) change(失焦)
+      // console.log(e);
+      this.message = e.target.value;
+    },
+    get_data: function(params) {
+      var v = this
+      if (!params) params = {}
       // 我们这里用全局绑定的 $api 方法来获取数据，方便吧~
       // v.$api.get('topics', params, function(r) {
       //   console.log(r)
       //   v.list = r.data
       // })
-    // },
+    },
   },
 }
 </script>
