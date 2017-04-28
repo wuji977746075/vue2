@@ -19,6 +19,10 @@ import store from './vuex/store'
 //   }
 // );
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
+Vue.use(ElementUI)
+
 // 引用router config
 import routes from './config/routes'
 // use router config

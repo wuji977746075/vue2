@@ -15,7 +15,8 @@ const state = {
   'menus': uz.NAME_TITILE,
   'menuShow': false,
   'loadingShow': false,
-  'news': 5
+  'news': 5,
+  'uid':0,
 };
 // 创建一个对象存储一系列我们接下来要写的 mutation 函数
 const mutations = {
@@ -23,6 +24,10 @@ const mutations = {
   UPDATE_TITLE(state, title) {
     console.log(title);
     state.headerTitle = title;
+  },
+  UPDATE_UID(state, uid) {
+    console.log('up-uid',uid);
+    state.uid = uid;
   },
   UPDATE_MENUSHOW(state) {
     state.menuShow = !state.menuShow;
