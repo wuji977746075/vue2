@@ -34,6 +34,9 @@ import api from './config/api'
 // 将API方法绑定到全局
 Vue.prototype.$api = api
 
+import axios from 'axios'
+Vue.prototype.$http = axios
+Vue.prototype.api_url = 'http://test.my/json/';
 // run
 new Vue({
   store,

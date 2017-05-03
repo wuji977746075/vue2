@@ -17,20 +17,20 @@ import { mapState } from 'vuex' //vuex store
 import { savaToLocal } from '../common/js/store'; //set localStorage
 import { loadFromlLocal } from '../common/js/store'; //get localStorage
 export default {
-  data () {
+  data() {
     return { //组件数据
-      list:[],
+      list: [],
       headerTitle: '',
-      news:'',
-      menus:'',
-      message:'',
+      news: '',
+      menus: '',
+      message: '',
     }
   },
   // props: ['father_message'],
-  created () { // 组件创建
+  created() { // 组件创建
     this.get_data()
   },
-  mounted () { // 组件加载
+  mounted() { // 组件加载
     console.log(this);
     this.headerTitle = this.$store.state.headerTitle
     this.news  = this.$store.state.news
@@ -41,26 +41,26 @@ export default {
     this.message = loadFromlLocal('index', 'message', 'init-message')
     // }, 2000)
   },
-  computed : { // 附加计算属性
-    ac : function (){ //get
+  computed: { // 附加计算属性
+    ac() { //get
       return this.news + this.headerTitle.split('').reverse().join('')
     },
-    bc : { //get and set
-      get : function (){
+    bc: { //get and set
+      get() {
         return this.news + ' by get';
       },
-      set : function (){
+      set() {
         this.news = this.news + ' by set';
       }
     }
   },
   methods: { // 组件方法
-    changeMes : function (e){ //input(立即) change(失焦)
+    changeMes(e) { //input(立即) change(失焦)
       // console.log(e);
       this.message = e.target.value
       savaToLocal('index', 'message', this.message)
     },
-    get_data: function(params) {
+    get_data(params) {
       var v = this
       if (!params) params = {}
       // 我们这里用全局绑定的 $api 方法来获取数据，方便吧~
