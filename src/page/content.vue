@@ -55,6 +55,7 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 </template>
 
 <script>
+var qs = require('qs');
 import { mapState } from 'vuex' //vuex store
 export default {
   data() {
@@ -105,8 +106,8 @@ export default {
         });
         if (valid) {
           // console.log(this.ruleForm);
-          // var formData = JSON.stringify(this.ruleForm);
-          var formData = this.ruleForm;
+          // var formData = this.ruleForm;
+          var formData = qs.stringify(this.ruleForm);
           console.log(formData);
           var v = this;
           this.$http.post(this.api_url+'form.php?id=5', formData,{
