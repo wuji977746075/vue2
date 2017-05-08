@@ -37,6 +37,19 @@ Vue.prototype.$api = api
 import axios from 'axios'
 Vue.prototype.$http = axios
 Vue.prototype.api_url = 'http://test.my/json/';
+
+//{{ row.date|time }}
+// Vue.filter('time', function (value) {//value兼容10/13位的时间戳
+//     function add0(m) {
+//         return m < 10 ? '0' + m : m
+//     }
+//     value = (value+'').length ==10 ? value*1000 : value;
+//     var time = new Date(parseInt(value));
+//     var y = time.getFullYear();
+//     var m = time.getMonth() + 1;
+//     var d = time.getDate();
+//     return y + '-' + add0(m) + '-' + add0(d);
+// });
 // run
 new Vue({
   store,

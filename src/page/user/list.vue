@@ -6,8 +6,8 @@
     :data="tableData"
     stripe
     empty-text="暂无数据"
+    :summary-method="getSum"
     show-summary
-    :summary-method="getSummaries"
     style="width: 100%"
     tooltip-effect="dark"
     @selection-change="handleSelectionChange">
@@ -18,11 +18,11 @@
     <el-table-column
       prop="id"
       label="ID"
-      width="60">
+      sortable
+      width="80">
     </el-table-column>
     <el-table-column
       label="日期"
-      sortable
       width="150">
       <template scope="scope">
         <el-icon name="time"></el-icon>
@@ -45,8 +45,14 @@
     </el-table-column>
     <el-table-column
       prop="address"
-      label="地址"
-      :formatter="formatter">
+      label="地址"><!-- :formatter="formatter" -->
+      <template scope="scope">
+        <el-input
+          placeholder="请输入地址"
+          v-model="scope.row.address"
+          :disabled="!scope.row.edit">
+        </el-input>
+      </template>
     </el-table-column>
     <el-table-column
       prop="tag"
@@ -63,12 +69,16 @@
       </template>
     </el-table-column>
     <el-table-column
+      prop="amount3"
+      label="数值 3（元）">
+    </el-table-column>
+    <el-table-column
       label="操作"
       show-overflow-tooltip>
       <template scope="scope">
         <el-button
           size="small"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          @click="handleEdit(scope.$index, scope.row)">{{ scope.row.edit ? '保存':'编辑' }}</el-button>
         <el-button
           size="small"
           type="danger"
@@ -78,7 +88,7 @@
   </el-table>
 
   <div style="margin-top: 20px">
-    <el-button @click="toggleSelection([tableData3[1], tableData3[2]])">切换第二、第三行的选中状态</el-button>
+    <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
     <el-button @click="toggleSelection()">取消选择</el-button>
   </div>
 
@@ -86,7 +96,8 @@
 </template>
 
 <script>
- //表格统计 和 排序 无效果?
+ import { formatDate } from '../../common/js/date';
+ //表格统计 无效果?
   export default {
     data() {
       return {
@@ -96,40 +107,31 @@
     },
     created() {
       //ajax get page data
-      this.tableData = [{
-          id:"1",
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          tag:'家'
-        }, {
-          id:"2",
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          tag:'公司'
-        }, {
-          id:"3",
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          tag:'家'
-        }, {
-          id:"4",
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          tag:'家'
-        }];
+      var data = [
+        { id:"1",tag:'家' }
+        ,{ id:"2",tag:'公司' }
+        ,{ id:"3",tag:'家' }
+        ,{ id:"4",tag:'家' }
+      ];
+      data.forEach (function(item,index) {
+        item.name = '王小虎';
+        item.date = formatDate(1495678900,'yyyy-MM-dd');
+        item.address = '上海市普陀区金沙江路 1518 弄';
+        item.edit = false;
+      });
+      this.tableData = data;
     },
     methods: {
       handleEdit(index, row) {
         // console.log(index, row);
         var id = row.id;
-        // ajax edit
+        row.edit = !row.edit;
+        if(row.edit){ //保存
+          // ajax-post edit
+
+        }
       },
       handleDelete(index, row) {
-        // console.log(index, row);
         var id = row.id;
         // ajax del
       },
@@ -146,12 +148,8 @@
         }
       },
       handleSelectionChange(rows) {
-        // this.multipleSelection = rows;
-        // console.log(rows);
+        this.multipleSelection = rows;
         var ids = [];
-        // for (var i = rows.length - 1; i >= 0; i--) {
-        //   ids.push(rows[i].id);
-        // };
         if(rows){
           rows.forEach(row => {
             ids.push(row.id);
@@ -166,32 +164,32 @@
       filterTag(value, row) {
         return row.tag === value;
       },
-      getSummaries(param) {
-        console.log('param',param);
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '总价';
-            return;
-          }
-          const values = data.map(item => Number(item[column.property]));
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-            sums[index] += ' 元';
-          } else {
-            sums[index] = 'N/A';
-          }
-        });
-
-        return sums;
+      getSum(param) {
+        // console.log('param',param);
+        return ['总价','15','N/a','','','','',''];
+        // const { columns, data } = param;
+        // const sums = [];
+        // columns.forEach((column, index) => {
+        //   if (index === 0) {
+        //     sums[index] = '总价';
+        //     return;
+        //   }
+        //   const values = data.map(item => Number(item[column.property]));
+        //   if (!values.every(value => isNaN(value))) {
+        //     sums[index] = values.reduce((prev, curr) => {
+        //       const value = Number(curr);
+        //       if (!isNaN(value)) {
+        //         return prev + curr;
+        //       } else {
+        //         return prev;
+        //       }
+        //     }, 0);
+        //     sums[index] += ' 元';
+        //   } else {
+        //     sums[index] = 'N/A';
+        //   }
+        // });
+        // return sums;
       }
     }
   }

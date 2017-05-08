@@ -1,8 +1,10 @@
 /** 格式化时间
- *  @param {string} date 需要格式化的时间
- *  @param {string} fmt 想要格式化的格式
+ *  @param {string} date 10/13位时间戳
+ *  @param {string} fmt  想要格式化的格式YMdhms
  */
-exports.formatDate = (date, fmt) => {
+export function formatDate(date, fmt) {
+    date = (date+'').length ==10 ? date*1000 : date;
+    date = new Date(parseInt(date));
     if (/(y+)/.test(fmt)) {
         fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
     }
@@ -24,7 +26,7 @@ exports.formatDate = (date, fmt) => {
 /** 格式化时间，返回年，月，日
  *  @param {string } date 需要格式化的时间
  */
-exports.objectDate = (date) => {
+export function objectDate(date) {
     if (date && typeof date === 'string') {
         date = new Date(date);
         let o = {
