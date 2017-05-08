@@ -1,11 +1,15 @@
 <style>
 .hide { display:none; }
 header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:white; }
-.cyan header{  background: #26b6be; }
-.pink header{  background: #d77672; }
 .color_box { width: 50px;height: 50px;color:white;display: inline-block; }
+
+/*theme cyan*/
+.cyan header{  background: #26b6be; }
 .id_cyan { background: #26b6be; }
+/*theme pink*/
+.pink header{  background: #d77672; }
 .id_pink { background: #d77672; }
+.devide{ text-align: center; }
 </style>
 <!-- 本地记事本 -->
 <template>
@@ -23,14 +27,16 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 
   </div>
   <div v-bind:class="{ hide:isHide }">
-    <div class='color_box id_cyan' v-on:click="changeBg(cyan)">cyan</div>
-    <div class='color_box id_pink' v-on:click="changeBg(pink)">pink</div>
+    <div class='color_box id_cyan' v-on:click="setTheme('cyan')"></div>
+    <div class='color_box id_pink' v-on:click="setTheme('pink')"></div>
   </div>
 
   <!-- 表单及提交及验证测试 -->
   <el-form ref="ruleForm" :rules="rules" :model="ruleForm" label-width="120px">
       <el-form-item label="活动名称" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+        <el-col :span="11">
+          <el-input v-model="ruleForm.name"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item label="活动时间" required>
         <el-col :span="5">
@@ -38,7 +44,7 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
             <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col class="line" :span="1">-</el-col>
+        <el-col class="devide" :span="1" >-</el-col>
         <el-col :span="5">
           <el-form-item prop="date2">
             <el-time-picker type="fixed-time" placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
@@ -99,11 +105,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         // this.$message('validing...');
-        this.$notify.info({
-          title: '成功',
-          message: '验证中...',
-          offset: 100
-        });
+        // this.$notify.info({
+        //   title: '成功',
+        //   message: '验证中...',
+        //   offset: 100
+        // });
         if (valid) {
           // console.log(this.ruleForm);
           // var formData = this.ruleForm;
@@ -143,9 +149,8 @@ export default {
     showBox(e) {
       this.isHide = !this.isHide
     },
-    changeBg(e) {
-      // console.log(e);
-      this.color = this.color=='pink' ? 'cyan' : 'pink'
+    setTheme(e) {
+      this.color = e
       // var div = this.$refs.theme
       // div = div.getAttribute('class')
       // console.log('class : ',div)
