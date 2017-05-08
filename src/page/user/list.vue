@@ -6,11 +6,11 @@
     :data="tableData"
     stripe
     empty-text="暂无数据"
-    :summary-method="getSum"
     show-summary
     style="width: 100%"
     tooltip-effect="dark"
     @selection-change="handleSelectionChange">
+    <!-- :summary-method="getSum" -->
     <el-table-column
       type="selection"
       width="55">
@@ -45,7 +45,8 @@
     </el-table-column>
     <el-table-column
       prop="address"
-      label="地址"><!-- :formatter="formatter" -->
+      label="地址">
+    <!-- :formatter="formatter" -->
       <template scope="scope">
         <el-input
           placeholder="请输入地址"
@@ -164,7 +165,7 @@
       filterTag(value, row) {
         return row.tag === value;
       },
-      getSum(param) {
+      getSum(param) { //bug 无反应
         // console.log('param',param);
         return ['总价','15','N/a','','','','',''];
         // const { columns, data } = param;
