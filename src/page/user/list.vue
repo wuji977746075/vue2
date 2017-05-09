@@ -2,9 +2,12 @@
 <div>
 
   <el-table
+    v-loading="loading"
+    element-loading-text="拼命加载中"
     ref="multipleTable"
     :data="tableData"
     stripe
+    :height = "440"
     empty-text="暂无数据"
     show-summary
     style="width: 100%"
@@ -22,56 +25,32 @@
       width="80">
     </el-table-column>
     <el-table-column
-      label="日期"
-      width="150">
-      <template scope="scope">
-        <el-icon name="time"></el-icon>
-        <span style="margin-left: 10px">{{ scope.row.date }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="name"
+      prop="contactname"
       label="姓名"
       width="120">
       <template scope="scope">
-        <!--el-popover trigger="hover" placement="top">
-          <p>姓名: {{ scope.row.name }}</p>
-          <p>住址: {{ scope.row.address }}</p>
-          <div slot="reference" class="name-wrapper"-->
-            <el-tag>{{ scope.row.name }}</el-tag>
-          <!--/div>
-        </el-popover-->
+        <el-tag>{{ scope.row.contactname }}</el-tag>
       </template>
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="detailinfo"
       label="地址">
     <!-- :formatter="formatter" -->
       <template scope="scope">
         <el-input
           placeholder="请输入地址"
-          v-model="scope.row.address"
+          v-model="scope.row.detailinfo"
           :disabled="!scope.row.edit">
         </el-input>
       </template>
     </el-table-column>
     <el-table-column
-      prop="tag"
-      label="标签"
-      width="100"
-      :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
-      :filter-method="filterTag"
-      filter-placement="bottom-end">
-      <template scope="scope">
-        <el-tag
-          hit
-          :type="scope.row.tag === '家' ? 'primary' : 'success'"
-          close-transition>{{ scope.row.tag }}</el-tag>
-      </template>
+      prop="uid"
+      label="UID">
     </el-table-column>
     <el-table-column
-      prop="amount3"
-      label="数值 3（元）">
+      prop="mobile"
+      label="手机号码">
     </el-table-column>
     <el-table-column
       label="操作"
@@ -87,52 +66,145 @@
       </template>
     </el-table-column>
   </el-table>
-
-  <div style="margin-top: 20px">
-    <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-    <el-button @click="toggleSelection()">取消选择</el-button>
-  </div>
-
+  <br />
+  <el-pagination
+   layout="total,prev, pager, next,jumper"
+   :current-page="cur_page"
+   @current-change='handlePager'
+   @size-change="handleSizeChange"
+   :page-sizes="[10, 20, 50]"
+   :page-size="per_page"
+   :total="total">
+  </el-pagination>
+  <!--el-button
+   size="small"
+   type="primary"
+   @click="handlePage(-1)"
+   :disabled="!hasPrev"
+   icon="arrow-left">上一页</el-button>
+  <el-button
+   size="small"
+   type="primary"
+   @click="handlePage(1)"
+   :disabled="!hasNext">下一页<i class="el-icon-arrow-right el-icon--right"></el-button-->
 </div>
 </template>
 
+<style>
+ .el-tag:empty{
+    display:none;
+ }
+</style>
+
 <script>
+
+ var qs = require('qs');
  import { formatDate } from '../../common/js/date';
  //表格统计 无效果?
   export default {
     data() {
       return {
         tableData: [],
+        cur_page : 0, //当前页,init:0
+        per_page : 10,//每页大小,init:10
+        page  : 1,    //前往的页码,init:1
+        total : 0,
+        loading : true,
         multipleSelection: []
       }
     },
+    computed : { //不应该使用箭头函数来定义计算属性函数
+      hasPrev : function() {
+        return this.cur_page > 1;
+      },
+      hasNext : function(){
+        return this.cur_page < this.pages;
+      },
+      pages : function() {
+        return Math.max(Math.ceil(this.total/this.per_page),1);
+      }
+    },
     created() {
-      //ajax get page data
-      var data = [
-        { id:"1",tag:'家' }
-        ,{ id:"2",tag:'公司' }
-        ,{ id:"3",tag:'家' }
-        ,{ id:"4",tag:'家' }
-      ];
-      data.forEach (function(item,index) {
-        item.name = '王小虎';
-        item.date = formatDate(1495678900,'yyyy-MM-dd');
-        item.address = '上海市普陀区金沙江路 1518 弄';
-        item.edit = false;
-      });
-      this.tableData = data;
+      this.getData();
     },
     methods: {
-      handleEdit(index, row) {
-        // console.log(index, row);
-        var id = row.id;
-        row.edit = !row.edit;
-        if(row.edit){ //保存
-          // ajax-post edit
-
+      getData() {
+        var v = this;
+        v.page = Math.min(Math.max(v.page,1),v.pages);
+        var api_url = v.api_url+'api.php?type=list&p='+v.page+'&s='+v.per_page;
+        console.log('created : rsq : '+api_url);
+        if(v.page != v.cur_page){
+          v.loading = true;
+          v.tableData = [];
+          //ajax get page data
+          v.$http.get(api_url).then((rsp) => {
+            v.cur_page = v.page;
+            var data = rsp.data;
+            // console.log('ajax-list : ',data);
+            if(data.state){
+              v.total = Math.max(data.info.count,0);
+              data = data.info.list;
+              data.forEach (function(item,index) {
+                // item.date = formatDate(1495678900,'yyyy-MM-dd');
+                item.edit = false;
+              });
+              v.tableData = data;
+              v.loading = false;
+            }else{
+              v.$message.error(data.info);
+            }
+          }).catch((err) => {
+            v.$message.error(err);
+          });
         }
       },
-      handleDelete(index, row) {
+      handleSizeChange(size) {
+        console.log(size);
+        this.per_page = size;
+        this.getData();
+      },
+      handlePager(page) {
+        this.page = page;
+        this.getData();
+      },
+      handlePage(plus) { //分页
+        if(plus === -1){
+          this.page --;
+          this.getData();
+        }else if(plus === 1){
+          this.page ++;
+          this.getData();
+        }else{
+          this.$message.error('非法操作');
+        }
+      },
+      handleEdit(index, row) { //编辑 和 保存
+        var v = this;
+        if(row.edit){ //保存
+          row.edit = !row.edit;
+          // ajax-post edit
+          var api_url = v.api_url+'api.php?type=edit';
+          var formData = qs.stringify(row);
+          v.$http.post(api_url,formData,{
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }).then((rsp) => {
+            var data = rsp.data;
+            // console.log('ajax-eidt : ',data);
+            v.$message.success(data.info);
+            // if(data.state){
+            //   //重新加载数据
+            //   v.getData(this.page);
+            // }
+          }).catch((err) => {
+            v.$message.error(err);
+          });
+        }else{
+          row.edit = !row.edit;
+        }
+      },
+      handleDelete(index, row) { //删除
         var id = row.id;
         // ajax del
       },
@@ -164,33 +236,6 @@
       },
       filterTag(value, row) {
         return row.tag === value;
-      },
-      getSum(param) { //bug 无反应
-        // console.log('param',param);
-        return ['总价','15','N/a','','','','',''];
-        // const { columns, data } = param;
-        // const sums = [];
-        // columns.forEach((column, index) => {
-        //   if (index === 0) {
-        //     sums[index] = '总价';
-        //     return;
-        //   }
-        //   const values = data.map(item => Number(item[column.property]));
-        //   if (!values.every(value => isNaN(value))) {
-        //     sums[index] = values.reduce((prev, curr) => {
-        //       const value = Number(curr);
-        //       if (!isNaN(value)) {
-        //         return prev + curr;
-        //       } else {
-        //         return prev;
-        //       }
-        //     }, 0);
-        //     sums[index] += ' 元';
-        //   } else {
-        //     sums[index] = 'N/A';
-        //   }
-        // });
-        // return sums;
       }
     }
   }
