@@ -1,6 +1,6 @@
 <template>
 <div>
-
+   子组件({{ username }})
   <el-table
     v-loading="loading"
     element-loading-text="拼命加载中"
@@ -98,9 +98,11 @@
 
 <script>
 
- var qs = require('qs');
- import { formatDate } from '../../common/js/date';
- //表格统计 无效果?
+  var qs = require('qs')
+  import { mapState } from 'vuex'
+  import { formatDate } from '../../common/js/date'
+
+  //表格统计 无效果?
   export default {
     data() {
       return {
@@ -115,17 +117,24 @@
     },
     computed : { //不应该使用箭头函数来定义计算属性函数
       hasPrev : function() {
-        return this.cur_page > 1;
+        return this.cur_page > 1
       },
       hasNext : function(){
-        return this.cur_page < this.pages;
+        return this.cur_page < this.pages
       },
       pages : function() {
-        return Math.max(Math.ceil(this.total/this.per_page),1);
+        return Math.max(Math.ceil(this.total/this.per_page),1)
+      },
+      username : function() {
+        return this.loginInfo ? this.loginInfo.name : ''
       }
     },
-    created() {
+    props: ['loginInfo'],
+    mounted() {
+      console.log(this.loginInfo)
       this.getData();
+    },
+    created() {
     },
     methods: {
       getData() {
@@ -185,11 +194,7 @@
           // ajax-post edit
           var api_url = v.api_url+'api.php?type=edit';
           var formData = qs.stringify(row);
-          v.$http.post(api_url,formData,{
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-          }).then((rsp) => {
+          v.$http.post(api_url,formData).then((rsp) => {
             var data = rsp.data;
             // console.log('ajax-eidt : ',data);
             v.$message.success(data.info);

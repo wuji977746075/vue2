@@ -38,3 +38,23 @@ export function loadFromlLocal(id, key, def) {
   let ret = seller[key];
   return ret || def;
 }
+
+export function setCookie (name, value, time) {
+  let d = new Date;
+  d.setTime(d.getTime() + time*1000);
+  window.document.cookie = name + "=" + JSON.stringify(value) + ";path=/;expires=" + d.toGMTString();
+
+}
+
+export function isLogin(){
+  return getCookie('login_info') || {};
+}
+
+export function getCookie (name) {
+  let v = window.document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? JSON.parse(v[2]) : null;
+}
+
+export function delCookie (name) {
+  setCookie(name, '', -1);
+}

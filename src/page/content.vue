@@ -10,10 +10,14 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 .pink header{  background: #d77672; }
 .id_pink { background: #d77672; }
 .devide{ text-align: center; }
+
+
+.si { width: 60px;height: 60px; }
 </style>
 <!-- 本地记事本 -->
 <template>
 <div>
+  <svg class="si"><use xlink:href="#icon-arrow-l"/></svg>
   <div class="" v-bind:class="color" ref="theme">
 
     <header> 记事本 </header>
@@ -61,8 +65,11 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 </template>
 
 <script>
-var qs = require('qs');
+var qs = require('qs')
 import { mapState } from 'vuex' //vuex store
+import { getCookie } from '../common/js/store'
+import { setCookie } from '../common/js/store'
+import { delCookie } from '../common/js/store'
 export default {
   data() {
     return {
@@ -90,15 +97,17 @@ export default {
     }
   },
   created() {
-    // console.log(this.$store);
+    //ajax svg
+    var SVG = '<svg style="display:none"><symbol id="icon-arrow-l" viewBox="0 0 8 16"><path d="M.146 7.646a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7v.708l7-7a.5.5 0 0 0-.708-.708l-7 7z"/></symbol><symbol id="icon-arrow-r" viewBox="0 0 7 12"><path d="M6.146 6.354v-.708l-5.5 5.5a.5.5 0 0 0 .708.708l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 1 0-.708.708l5.5 5.5z"/></symbol></svg>'
+    document.body.insertAdjacentHTML("afterBegin", SVG)
   },
   mounted() {
-    // console.log(this);
-    // this.uid = ;
+    // console.log(this.$store)
+    // this.uid =
   },
   computed: {
     // uid() { //get
-    //   return mapState.getUid;
+    //   return mapState.getUid
     // },
   },
   methods: {
@@ -112,35 +121,38 @@ export default {
         // });
         if (valid) {
           // console.log(this.ruleForm);
-          // var formData = this.ruleForm;
+          // var formData = this.ruleForm; //obj Observer
           var formData = qs.stringify(this.ruleForm);
-          console.log(formData);
-          var v = this;
-          this.$http.post(this.api_url+'form.php?id=5', formData,{
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
+          var _this = this;
+          // this.$http({
+          //   method: 'post',
+          //   url: this.api_url+'form.php?id=5',
+          //   data: this.ruleForm
+          // })
+          this.$http.post(this.api_url+'form.php?id=5',formData)
+          .then(rsp => {
+            console.log(rsp)
+            _this.$message('ajax-登陆成功')
+            setCookie('login_info',this.ruleForm,600)
+            _this.$router.push({ path: 'user/list' });
           })
-          .then((rsp) => {
-            console.log(rsp);
-            v.$message('ajax-success');
+          .catch(err => {
+            console.log(err)
+            _this.$message('ajax-error')
           })
-          .catch((err) => {
-            console.log(err);
-            v.$message('ajax-error');
-          });
+          // .bind(this)
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     changeMes(v) {
       console.log(v);
-      this.$store.commit('UPDATE_UID',v);
+      this.$store.commit('UPDATE_UID',v)
       // this.uid = parseInt(e.target.value)
       // this.$store.commit('UPDATE_UID',this.uid);
       // this.$store.state.headerTitle = this.uid

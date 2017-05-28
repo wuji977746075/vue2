@@ -1,5 +1,9 @@
 <template>
 <div>
+
+  <span v-if="isLogin">已登录 | {{ username }}</span>
+  <span v-if="!isLogin">未登录 | <router-link to="/content">前往登陆</router-link></span>
+
   <h1 class="logo" v-text="headerTitle"></h1>
   <div v-text="news"></div>
   <input v-bind:value="message" v-on:input="changeMes" placeholder="edit me" debounce="500">
@@ -14,8 +18,8 @@
 
 <script>
 import { mapState } from 'vuex' //vuex store
-import { savaToLocal } from '../common/js/store'; //set localStorage
-import { loadFromlLocal } from '../common/js/store'; //get localStorage
+import { savaToLocal } from '../common/js/store' //set localStorage
+import { loadFromlLocal } from '../common/js/store' //get localStorage
 export default {
   data() {
     return { //组件数据
@@ -24,14 +28,18 @@ export default {
       news: '',
       menus: '',
       message: '',
+      isLogic : false,
+      username : '',
     }
   },
   // props: ['father_message'],
   created() { // 组件创建
     this.get_data()
   },
+  mounted() {
+  },
   mounted() { // 组件加载
-    console.log(this);
+    console.log(this)
     this.headerTitle = this.$store.state.headerTitle
     this.news  = this.$store.state.news
     this.menus = this.$store.state.menus
@@ -47,10 +55,10 @@ export default {
     },
     bc: { //get and set
       get() {
-        return this.news + ' by get';
+        return this.news + ' by get'
       },
       set() {
-        this.news = this.news + ' by set';
+        this.news = this.news + ' by set'
       }
     }
   },
@@ -68,7 +76,7 @@ export default {
         console.log(r)
         v.list = r.data
       })
-    },
+    }
   },
 }
 </script>
