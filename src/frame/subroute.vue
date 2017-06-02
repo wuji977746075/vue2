@@ -6,6 +6,10 @@
 </div>
 </template>
 
+<style lang="scss">
+  @import "../style/user";
+</style>
+
 <script>
   // import { mapState,mapGetters } from 'vuex'
   import pubHeader from '../components/pubHeader'

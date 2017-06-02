@@ -1,3 +1,3 @@
 <template>
-  <div> --- footer p --- </div>
+  <div class="pub-footer"> --- footer © 2017 --- </div>
 </template>

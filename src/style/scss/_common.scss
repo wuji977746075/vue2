@@ -1,1 +1,14 @@
-body { color :#333 }
+.pub-header {
+  font-size: 20px;
+  a{
+    color : $red_l;
+  }
+  border-bottom: 1px $red_l solid;
+  padding-bottom: 10px;
+}
+
+.pub-footer {
+  padding-top: 10px;
+  border-top: 1px $red_l solid;
+  font-size: 18px;
+}
