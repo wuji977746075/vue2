@@ -20,14 +20,14 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
   <svg class="si"><use xlink:href="#icon-arrow-l"/></svg>
   <div class="" v-bind:class="color" ref="theme">
 
-    <header> 记事本 </header>
+    <header> 登陆 </header>
 
     <textarea v-model="logText"></textarea><el-button v-on:click="log">提交</el-button>
     <br />
 
-    <el-input-number name="uid" v-model="uid" @change="changeMes" :min="0" :max="100">
-    </el-input-number> <br />
     <el-button type="primary" v-on:click="showBox">切换主题</el-button>
+    UID<el-input-number v-model="uid" @change="changeMes" :min="0" :max="100">
+    </el-input-number>
 
   </div>
   <div v-bind:class="{ hide:isHide }">
@@ -37,7 +37,7 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 
   <!-- 表单及提交及验证测试 -->
   <el-form ref="ruleForm" :rules="rules" :model="ruleForm" label-width="120px">
-      <el-form-item label="活动名称" prop="name">
+      <el-form-item label="用户名" prop="name">
         <el-col :span="11">
           <el-input v-model="ruleForm.name"></el-input>
         </el-col>
@@ -66,25 +66,23 @@ header{ text-align: center;font-size: 25px;height: 40px;line-height: 40px;color:
 
 <script>
 var qs = require('qs')
-import { mapState } from 'vuex' //vuex store
-import { getCookie } from '../common/js/store'
-import { setCookie } from '../common/js/store'
-import { delCookie } from '../common/js/store'
+import { mapState,mapGetters } from 'vuex' //vuex store
 export default {
   data() {
     return {
-      uid: this.$store.state.uid,
+      uid : 11,
       color: 'cyan',
       isHide: true,
       logText: '',
       ruleForm: {
+        uid : 11,
         name: '',
         date1: '',
         date2: '',
       },
       rules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
         date1: [
@@ -106,9 +104,7 @@ export default {
     // this.uid =
   },
   computed: {
-    // uid() { //get
-    //   return mapState.getUid
-    // },
+    // ...mapGetters({ uid:'UID' })
   },
   methods: {
     submitForm(formName) {
@@ -120,10 +116,10 @@ export default {
         //   offset: 100
         // });
         if (valid) {
-          // console.log(this.ruleForm);
+          // console.log(this.ruleForm)
           // var formData = this.ruleForm; //obj Observer
-          var formData = qs.stringify(this.ruleForm);
-          var _this = this;
+          var formData = qs.stringify(this.ruleForm); //ok
+          var _this = this
           // this.$http({
           //   method: 'post',
           //   url: this.api_url+'form.php?id=5',
@@ -133,7 +129,7 @@ export default {
           .then(rsp => {
             console.log(rsp)
             _this.$message('ajax-登陆成功')
-            setCookie('login_info',this.ruleForm,600)
+            _this.$store.commit('Login',this.ruleForm)
             _this.$router.push({ path: 'user/list' });
           })
           .catch(err => {
@@ -151,8 +147,8 @@ export default {
       this.$refs[formName].resetFields()
     },
     changeMes(v) {
-      console.log(v);
-      this.$store.commit('UPDATE_UID',v)
+      // console.log(v);
+      // this.$store.commit('UPDATE_UID',v)
       // this.uid = parseInt(e.target.value)
       // this.$store.commit('UPDATE_UID',this.uid);
       // this.$store.state.headerTitle = this.uid

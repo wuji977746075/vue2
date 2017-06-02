@@ -1,6 +1,5 @@
 <template>
 <div>
-   子组件({{ username }})
   <el-table
     v-loading="loading"
     element-loading-text="拼命加载中"
@@ -99,7 +98,7 @@
 <script>
 
   var qs = require('qs')
-  import { mapState } from 'vuex'
+  // import { mapState,mapGetters } from 'vuex'
   import { formatDate } from '../../common/js/date'
 
   //表格统计 无效果?
@@ -112,7 +111,7 @@
         page  : 1,    //前往的页码,init:1
         total : 0,
         loading : true,
-        multipleSelection: []
+        multipleSelection: [],
       }
     },
     computed : { //不应该使用箭头函数来定义计算属性函数
@@ -125,13 +124,10 @@
       pages : function() {
         return Math.max(Math.ceil(this.total/this.per_page),1)
       },
-      username : function() {
-        return this.loginInfo ? this.loginInfo.name : ''
-      }
     },
-    props: ['loginInfo'],
+    // props: ['loginInfo'],
     mounted() {
-      console.log(this.loginInfo)
+      // console.log(this.loginInfo)
       this.getData();
     },
     created() {
@@ -171,6 +167,10 @@
         console.log(size);
         this.per_page = size;
         this.getData();
+      },
+      logout() {
+        console.log('logout')
+        this.$emit('upup','hehe')
       },
       handlePager(page) {
         this.page = page;

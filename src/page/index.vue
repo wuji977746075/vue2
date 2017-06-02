@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <span v-if="isLogin">已登录 | {{ username }}</span>
+  <span v-if="isLogin">已登录 | {{ name }}</span>
   <span v-if="!isLogin">未登录 | <router-link to="/content">前往登陆</router-link></span>
 
   <h1 class="logo" v-text="headerTitle"></h1>
@@ -11,46 +11,41 @@
   <router-link to="/welcome">welcome.html</router-link>
   <router-link to="/content">content.html</router-link>
   <ul class="list">
-    <li v-for="item in list" v-text="item.title"></li>
+    <li v-for="item in flist" v-text="item.title"></li>
   </ul>
 </div>
 </template>
 
 <script>
-import { mapState } from 'vuex' //vuex store
-import { savaToLocal } from '../common/js/store' //set localStorage
-import { loadFromlLocal } from '../common/js/store' //get localStorage
+import { mapState,mapGetters } from 'vuex' //vuex store
+import { savaToLocal,loadFromlLocal } from '../common/js/store' //handel localStorage
 export default {
-  data() {
+  data () {
     return { //组件数据
       list: [],
-      headerTitle: '',
-      news: '',
-      menus: '',
       message: '',
-      isLogic : false,
-      username : '',
     }
   },
   // props: ['father_message'],
   created() { // 组件创建
     this.get_data()
   },
-  mounted() {
-  },
   mounted() { // 组件加载
     console.log(this)
-    this.headerTitle = this.$store.state.headerTitle
-    this.news  = this.$store.state.news
-    this.menus = this.$store.state.menus
     // setTimeout(() => {
     // localstorge
     // savaToLocal('index', 'title', 'title')
     this.message = loadFromlLocal('index', 'message', 'init-message')
     // }, 2000)
   },
-  computed: { // 附加计算属性
-    ac() { //get
+  computed: {
+    flist : function () {
+      return this.list.filter(function(item,index){
+        // console.log(item,index)
+        return index < 5
+      });
+    },
+    ac () { //get
       return this.news + this.headerTitle.split('').reverse().join('')
     },
     bc: { //get and set
@@ -60,7 +55,13 @@ export default {
       set() {
         this.news = this.news + ' by set'
       }
-    }
+    },
+    ...mapState([
+      'headerTitle','news','menus'
+    ]),
+    ...mapGetters([
+      'UID','isLogin','name'
+    ]),
   },
   methods: { // 组件方法
     changeMes(e) { //input(立即) change(失焦)

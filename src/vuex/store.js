@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import * as uz from '../common/js/uz';
+import { setCookie,delCookie,getCookie } from '../common/js/store';
 // 告诉 vue “使用” vuex
 Vue.use(Vuex);
 
@@ -16,7 +17,7 @@ const state = {
   'menuShow': false,
   'loadingShow': false,
   'news': 5,
-  'uid':0,
+  'uinfo':getCookie('login_info'),
 };
 // 创建一个对象存储一系列我们接下来要写的 mutation 函数
 const mutations = {
@@ -27,7 +28,9 @@ const mutations = {
   },
   UPDATE_UID(state, uid) {
     console.log('up-uid',uid);
-    state.uid = uid;
+    if(!isEmpty(state.uinfo)){
+      state.uinfo.uid = uid
+    }
   },
   UPDATE_MENUSHOW(state) {
     state.menuShow = !state.menuShow;
@@ -37,14 +40,30 @@ const mutations = {
   },
   UPDATE_NEWS(state) {
     state.news = 0;
+  },
+  Login(state,uinfo) {
+    state.uinfo = uinfo
+    setCookie('login_info',uinfo,600)
+  },
+  Logout(state) {
+    state.uinfo = null
+    delCookie('login_info',null)
   }
 };
 
 // 整合初始状态和变更函数，我们就得到了我们所需的 store
 // 至此，这个 store 就可以连接到我们的应用中
 export default new Vuex.Store({
+  // strict: process.env.NODE_ENV !== 'production', //所有改变必须由
   state,
+  getters,
   mutations,
-  actions,
-  getters
+  actions
 });
+
+function isEmpty(obj) {
+  for (var name in obj) {
+    return false;
+  }
+  return true;
+}

@@ -39,15 +39,15 @@ export function loadFromlLocal(id, key, def) {
   return ret || def;
 }
 
+export function isLogin(){
+  return getCookie('login_info') || {};
+}
+
 export function setCookie (name, value, time) {
   let d = new Date;
   d.setTime(d.getTime() + time*1000);
   window.document.cookie = name + "=" + JSON.stringify(value) + ";path=/;expires=" + d.toGMTString();
 
-}
-
-export function isLogin(){
-  return getCookie('login_info') || {};
 }
 
 export function getCookie (name) {

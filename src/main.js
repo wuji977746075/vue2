@@ -8,6 +8,12 @@ Vue.use(VueRouter)
 import App from './App'
 
 import store from './vuex/store'
+
+//全局注册
+// import pubHeader from './components/pubHeader'
+// Vue.component('pub-header', pubHeader)
+
+
 // import {loadFromlLocal} from './common/js/store';  // 公共方法：本地缓存
 
 // import VueLazyload from 'vue-lazyload';  // 引入图片懒加载模块
@@ -38,7 +44,7 @@ import axios from 'axios'
 Vue.prototype.$http = axios
 Vue.prototype.api_url = 'http://test.my/json/';
 
-//{{ row.date|time }}
+//全局过滤器 {{ row.date|time }}
 // Vue.filter('time', function (value) {//value兼容10/13位的时间戳
 //     function add0(m) {
 //         return m < 10 ? '0' + m : m

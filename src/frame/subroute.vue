@@ -1,42 +1,32 @@
 <template>
 <div>
-  <div>
-    <span v-if="isLogin">已登录 | {{ username }} <button @click="logout">注销</button></span>
-    <span v-if="!isLogin">未登录 | <router-link to="/content">前往登陆</router-link></span>
-  </div>
-  <router-view :login-info="login_info"></router-view>
-  <div>--- footer --- </div>
+  <pub-header></pub-header>
+  <router-view @upup="childsay" :msg="msg"></router-view>
+  <pub-footer></pub-footer>
 </div>
 </template>
 
 <script>
-
-  import { mapState } from 'vuex'
-  import { getCookie } from '../common/js/store'
-  import { setCookie } from '../common/js/store'
-  import { delCookie } from '../common/js/store'
+  // import { mapState,mapGetters } from 'vuex'
+  import pubHeader from '../components/pubHeader'
+  import pubFooter from '../components/pubFooter'
+  import { getCookie,setCookie,delCookie } from '../common/js/store'
     //表格统计 无效果?
   export default {
+    components : { pubHeader,pubFooter },//这里注册
     data() {
       return {
-        login_info  : null
+        msg : 'parent-msg',
       }
     },
     computed : {
-      isLogin : function() {
-        return Boolean(this.login_info)
-      },
-      username : function() {
-        return this.login_info ? this.login_info.name : '';
-      }
     },
     created() {
-      this.login_info = getCookie('login_info')
     },
     methods : {
-      logout() {
-        delCookie('login_info')
-        this.login_info = null
+      childsay(msg) {
+        this.msg = msg
+        console.log('parent-receive',msg)
       }
     }
   }
