@@ -1,9 +1,6 @@
 <template>
 <div>
-
-  <span v-if="isLogin">已登录 | {{ name }}</span>
-  <span v-if="!isLogin">未登录 | <router-link to="/content">前往登陆</router-link></span>
-
+  <pub-header></pub-header>
   <h1 class="logo" v-text="headerTitle"></h1>
   <div v-text="news"></div>
   <input v-bind:value="message" v-on:input="changeMes" placeholder="edit me" debounce="500">
@@ -13,13 +10,21 @@
   <ul class="list">
     <li v-for="item in flist" v-text="item.title"></li>
   </ul>
+  <pub-footer></pub-footer>
 </div>
 </template>
 
+<style lang="scss">
+  @import "../style/index";
+</style>
+
 <script>
-import { mapState,mapGetters } from 'vuex' //vuex store
+import pubHeader from '../components/pubHeader'
+import pubFooter from '../components/pubFooter'
+import { mapState } from 'vuex' //vuex store
 import { savaToLocal,loadFromlLocal } from '../common/js/store' //handel localStorage
 export default {
+  components : { pubHeader,pubFooter },
   data () {
     return { //组件数据
       list: [],
@@ -58,9 +63,6 @@ export default {
     },
     ...mapState([
       'headerTitle','news','menus'
-    ]),
-    ...mapGetters([
-      'UID','isLogin','name'
     ]),
   },
   methods: { // 组件方法
