@@ -1,5 +1,5 @@
 <template>
-  <div class="pub-header">
+  <div class="pub-hd">
     <span v-if="isLogin">已登录 | {{ name }} <button @click="logout('')">注销</button></span>
     <span v-if="!isLogin">未登录 | <router-link to="/content">前往登陆</router-link></span>
   </div>
@@ -21,7 +21,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

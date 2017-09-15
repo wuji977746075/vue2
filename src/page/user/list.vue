@@ -1,18 +1,20 @@
 <template>
-<div>
+<div class="pub-bd">
   <el-table
     v-loading="loading"
     element-loading-text="拼命加载中"
     ref="multipleTable"
     :data="tableData"
+    border
     stripe
-    :height = "440"
     empty-text="暂无数据"
-    show-summary
-    style="width: 100%"
     tooltip-effect="dark"
-    @selection-change="handleSelectionChange">
-    <!-- :summary-method="getSum" -->
+    :summary-method="getSum"
+    highlight-current-row
+    show-summary
+    :height = "440"
+    @selection-change="handleSelectionChange"
+    style="width: 100%; margin-top: 20px;">
     <el-table-column
       type="selection"
       width="55">
@@ -98,6 +100,7 @@
 <script>
 
   var qs = require('qs')
+
   // import { mapState,mapGetters } from 'vuex'
   import { formatDate } from '../../common/js/date'
 
@@ -107,7 +110,7 @@
       return {
         tableData: [],
         cur_page : 0, //当前页,init:0
-        per_page : 10,//每页大小,init:10
+        per_page : 15,//每页大小,init:10
         page  : 1,    //前往的页码,init:1
         total : 0,
         loading : true,
@@ -241,6 +244,34 @@
       },
       filterTag(value, row) {
         return row.tag === value;
+      },
+      getSum(param) { //bug 无反应
+        // console.log('param',param);
+        // return ['总价','15','N/a','','','','',''];
+        const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '总价';
+            return;
+          }
+          // const values = data.map(item => Number(item[column.property]));
+          // if (!values.every(value => isNaN(value))) {
+          //   sums[index] = values.reduce((prev, curr) => {
+          //     const value = Number(curr);
+          //     if (!isNaN(value)) {
+          //       return prev + curr;
+          //     } else {
+          //       return prev;
+          //     }
+          //   }, 0);
+          //   sums[index] += ' 元';
+          // } else {
+            sums[index] = 'N/A';
+          // }
+        });
+
+        return sums;
       }
     }
   }

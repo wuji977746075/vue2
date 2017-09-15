@@ -1,3 +1,5 @@
 <template>
-  <div class="pub-footer"> --- footer © 2017 --- </div>
+<div class="pub-ft">
+--- footer 漏 2017 ---
+</div>
 </template>

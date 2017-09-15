@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="pub" id="js-pub">
   <pub-header></pub-header>
   <router-view @upup="childsay" :msg="msg"></router-view>
   <pub-footer></pub-footer>
